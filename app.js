@@ -28,9 +28,7 @@ function buildQuiz() {
     })
     quizContainer.innerHTML = output.join('')
 }
-
 function showResults(){
-
 }
 
 buildQuiz();
