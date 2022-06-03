@@ -1,6 +1,9 @@
 const question = document.getElementById('question')
 const choices = Array.from(document.getElementsByClassName('choice-text'))
 //makes it into an array - can test out by console log
+const questionCounterText = document.getElementById('questionCounter')
+const scoreText = document.getElementById('score')
+const progressText = document.getElementById('progressText')
 
 let currentQuestion = {}
 let acceptingAnswers = true
@@ -108,10 +111,10 @@ getNewQuestion = () => {
         return window.location.assign('/end.html')
     }
     questionCounter++
+    questionCounterText.innerText = `${questionCounter}/${MAX_QUESTIONS}`
     const questionIndex = Math.floor(Math.random() * availableQuestions.length)
     currentQuestion = availableQuestions[questionIndex]
     question.innerText = currentQuestion.question
-
     choices.forEach( choice => {
         const number = choice.dataset['number']
         choice.innerText = currentQuestion['choice' + number]
@@ -127,8 +130,31 @@ choices.forEach(choice => {
         acceptingAnswers = false
         const selectedChoice = e.target
         const selectedAnswer = selectedChoice.dataset['number']
-        getNewQuestion()
+
+        //want a correct class & incorrect class
+        // let classToApply = 'incorrect'
+        // if (selectedAnswer == currentQuestion.answer) {
+        //     classToApply = 'correct'
+        //     console.log(classToApply)
+        // }
+        const classToApply = 
+            selectedAnswer == currentQuestion.answer ? 'correct' : 'incorrect'
+            if(classToApply === 'correct') {
+                incrementScore(CORRECT_BONUS)
+            }
+            //grabbing the whole container of the choice
+        selectedChoice.parentElement.classList.add(classToApply)
+        setTimeout(() => {
+            selectedChoice.parentElement.classList.remove(classToApply)
+            getNewQuestion()
+            
+        }, 700);
     })
 })
+
+incrementScore = num => {
+    score += num
+    scoreText.innerText = score
+}
 
 startGame()
