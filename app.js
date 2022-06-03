@@ -4,6 +4,7 @@ const choices = Array.from(document.getElementsByClassName('choice-text'))
 const questionCounterText = document.getElementById('questionCounter')
 const scoreText = document.getElementById('score')
 const progressText = document.getElementById('progressText')
+const progressBarFull = document.getElementById('progressBarFull')
 
 let currentQuestion = {}
 let acceptingAnswers = true
@@ -112,6 +113,9 @@ getNewQuestion = () => {
     }
     questionCounter++
     questionCounterText.innerText = `${questionCounter}/${MAX_QUESTIONS}`
+    //update the progress bar
+    progressBarFull.style.width = `${(questionCounter / MAX_QUESTIONS) * 100}%`
+
     const questionIndex = Math.floor(Math.random() * availableQuestions.length)
     currentQuestion = availableQuestions[questionIndex]
     question.innerText = currentQuestion.question
