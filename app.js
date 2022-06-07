@@ -5,6 +5,8 @@ const questionCounterText = document.getElementById('questionCounter')
 const scoreText = document.getElementById('score')
 const progressText = document.getElementById('progressText')
 const progressBarFull = document.getElementById('progressBarFull')
+const loader = document.getElementById('loader')
+const game = document.getElementById('game')
 
 let currentQuestion = {}
 let acceptingAnswers = true
@@ -14,10 +16,25 @@ let availableQuestions = []
 
 let questions = []
 
-fetch("questions.json")
-.then( response =>  response.json())
+fetch("https://opentdb.com/api.php?amount=10&category=17&difficulty=medium&type=multiple")
+.then( res => {
+    return res.json()
+})
 .then( loadedQuestions => {
-    questions = loadedQuestions
+    questions = loadedQuestions.results.map(loadedQuestion => {
+        const formattedQuestion = {
+            question: loadedQuestion.question
+        }
+        const answerChoices = [ ...loadedQuestion.incorrect_answers]
+        formattedQuestion.answer = Math.floor(Math.random() * 3) + 1
+        answerChoices.splice(formattedQuestion.answer -1, 0, loadedQuestion.correct_answer)
+
+        answerChoices.forEach((choice, index) => {
+            formattedQuestion["choice" + (index+1)] = choice
+        })
+        return formattedQuestion
+    })
+
     startGame()
 })
 .catch( err => {
@@ -48,6 +65,8 @@ startGame = () => {
     score = 0
     availableQuestions = [...questions] //need full copy to spread questions into new array
     getNewQuestion();
+    game.classList.remove('hidden')
+    loader.classList.add('hidden')
 }
 
 getNewQuestion = () => {
